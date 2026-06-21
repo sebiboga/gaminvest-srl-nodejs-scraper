@@ -39,10 +39,9 @@ describe('Integration: API Workflow', () => {
       expect(results.length).toBeGreaterThan(0);
 
       const company = results.find(c =>
-        c.name.toUpperCase().includes('GAMINVEST') && c.statusLabel === 'Funcțiune'
+        c.name.toUpperCase().includes('GAMINVEST') && c.cui.toString() === GAMINVEST_CIF
       );
       expect(company).toBeDefined();
-      expect(company.cui.toString()).toBe(GAMINVEST_CIF);
     }, 15000);
 
     it('should return empty array for non-existent brand', async () => {

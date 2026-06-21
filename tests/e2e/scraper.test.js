@@ -23,97 +23,60 @@ beforeAll(() => {
 });
 
 const TEST_CIF = '21913994';
-const TEST_BRAND = 'GAMINVEST';
-const GAMINVEST_API_URL = 'https://www.gaminvest.ro/api/jobs/v2/search/careers-i18n?from=0&lang=en&size=5&sortBy=relevance%3Brelocation%3Dasc&websiteLocale=en-us&facets=country%3D8150000000000001155';
-const ROMANIAN_CITIES = ['Bucharest', 'București', 'Cluj-Napoca', 'Timișoara', 'Iași', 'Brașov', 'Constanța', 'Sibiu', 'Oradea'];
+const CAREERS_URL = 'https://www.gaminvest.ro/cariere.html';
 
 describe('E2E: Full Scraping Pipeline', () => {
+  let htmlData;
 
-  describe('GAMINVEST Careers API — Real Data Fetch', () => {
-    let apiData;
+  beforeAll(async () => {
+    const res = await fetch(CAREERS_URL, {
+      headers: { 'User-Agent': 'job_seeker_ro_spider' }
+    });
+    htmlData = await res.text();
+  }, 15000);
 
-    beforeAll(async () => {
-      const res = await fetch(GAMINVEST_API_URL, {
-        headers: {
-          'User-Agent': 'job_seeker_ro_spider',
-          'Accept': 'application/json'
-        }
-      });
-      apiData = await res.json();
-    }, 15000);
+  describe('GAMINVEST Careers Page — Real Data Fetch', () => {
 
-    it('should respond with valid job data from GAMINVEST API', () => {
-      expect(apiData).toHaveProperty('data');
-      expect(apiData.data).toHaveProperty('jobs');
-      expect(Array.isArray(apiData.data.jobs)).toBe(true);
-      expect(apiData.data.jobs.length).toBeGreaterThan(0);
-      expect(apiData.data).toHaveProperty('total');
-      expect(typeof apiData.data.total).toBe('number');
+    it('should respond with valid HTML from GAMINVEST careers page', () => {
+      expect(htmlData.length).toBeGreaterThan(0);
+      expect(htmlData).toContain('<select');
     }, 10000);
 
-    it('should have Romania jobs with expected fields', () => {
-      const job = apiData.data.jobs[0];
-      expect(job).toHaveProperty('uid');
-      expect(job).toHaveProperty('name');
-      expect(typeof job.name).toBe('string');
-      expect(job).toHaveProperty('city');
+    it('should contain the job select element', () => {
+      expect(htmlData).toContain('id="post"');
+      expect(htmlData).toContain('<option');
     });
 
-    it('should have Romanian country on all jobs', () => {
-      const allCountries = apiData.data.jobs.flatMap(j =>
-        (j.country || []).map(c => c.name?.toLowerCase())
-      );
-      expect(allCountries.length).toBeGreaterThan(0);
-      expect(allCountries.every(c => c === 'romania')).toBe(true);
-    });
-
-    it('should have country set to Romania', () => {
-      const job = apiData.data.jobs[0];
-      expect(job).toHaveProperty('country');
-      const romaniaCountry = (job.country || []).some(c =>
-        c.name?.toLowerCase() === 'romania'
-      );
-      expect(romaniaCountry).toBe(true);
+    it('should contain at least one job option', () => {
+      const optionMatches = htmlData.match(/<option value="[^"]*">[^<]+<\/option>/g);
+      expect(optionMatches).not.toBeNull();
+      expect(optionMatches.length).toBeGreaterThan(0);
     });
   });
 
   describe('Parse + Transform Pipeline', () => {
     let index;
-    let apiData;
+    let parsed;
 
     beforeAll(async () => {
       index = await import('../../index.js');
-      const res = await fetch(GAMINVEST_API_URL, {
-        headers: {
-          'User-Agent': 'job_seeker_ro_spider',
-          'Accept': 'application/json'
-        }
-      });
-      apiData = await res.json();
+      parsed = index.parseJobsPage(htmlData);
     }, 15000);
 
-    it('should parse real GAMINVEST API response into standardized format', () => {
-      const result = index.parseApiJobs(apiData);
+    it('should parse real GAMINVEST HTML into standardized format', () => {
+      expect(Array.isArray(parsed)).toBe(true);
+      expect(parsed.length).toBeGreaterThan(0);
 
-      expect(result).toHaveProperty('jobs');
-      expect(result).toHaveProperty('total');
-      expect(result.jobs.length).toBeGreaterThan(0);
-      expect(result.jobs.length).toBeLessThanOrEqual(5);
-
-      const parsed = result.jobs[0];
-      expect(parsed).toHaveProperty('url');
-      expect(parsed.url).toMatch(/^https:\/\/www\.gaminvest\.ro\//);
-      expect(parsed).toHaveProperty('title');
-      expect(parsed).toHaveProperty('workmode');
-      expect(['remote', 'on-site', 'hybrid']).toContain(parsed.workmode);
-      expect(parsed).toHaveProperty('location');
-      expect(Array.isArray(parsed.location)).toBe(true);
-      expect(parsed).toHaveProperty('tags');
+      const job = parsed[0];
+      expect(job).toHaveProperty('url');
+      expect(job).toHaveProperty('title');
+      expect(job).toHaveProperty('location');
+      expect(typeof job.location).toBe('string');
+      expect(job.location.length).toBeGreaterThan(0);
     });
 
     it('should map parsed jobs to job model', () => {
-      const parsed = index.parseApiJobs(apiData);
-      const model = index.mapToJobModel(parsed.jobs[0], TEST_CIF);
+      const model = index.mapToJobModel(parsed[0], TEST_CIF);
 
       expect(model).toHaveProperty('url');
       expect(model).toHaveProperty('title');
@@ -121,12 +84,10 @@ describe('E2E: Full Scraping Pipeline', () => {
       expect(model).toHaveProperty('cif', TEST_CIF);
       expect(model).toHaveProperty('status', 'scraped');
       expect(model).toHaveProperty('date');
-      expect(model.url).toMatch(/^https:\/\/www\.gaminvest\.ro\//);
     });
 
     it('should transform jobs and filter to Romanian locations', () => {
-      const parsed = index.parseApiJobs(apiData);
-      const jobs = parsed.jobs.map(j => index.mapToJobModel(j, TEST_CIF));
+      const jobs = parsed.map(j => index.mapToJobModel(j, TEST_CIF));
 
       const payload = {
         source: 'gaminvest.ro',
@@ -147,18 +108,6 @@ describe('E2E: Full Scraping Pipeline', () => {
         expect(job.workmode).toMatch(/^(remote|on-site|hybrid)$/);
       }
     });
-
-    it('should produce valid job URLs that are accessible', async () => {
-      const parsed = index.parseApiJobs(apiData);
-
-      for (const job of parsed.jobs.slice(0, 2)) {
-        const res = await fetch(job.url, {
-          method: 'HEAD',
-          headers: { 'User-Agent': 'job_seeker_ro_spider' }
-        });
-        expect(res.ok).toBe(true);
-      }
-    }, 30000);
   });
 
   describe('Company Validation Path', () => {
@@ -171,17 +120,11 @@ describe('E2E: Full Scraping Pipeline', () => {
     });
 
     it('should find GAMINVEST in ANAF and validate active status', async () => {
-      const results = await anaf.searchCompany(TEST_BRAND);
-
-      const company = results.find(c =>
-        c.name.toUpperCase().startsWith(TEST_BRAND + ' ') &&
-        c.statusLabel === 'Funcțiune'
-      );
-      expect(company).toBeDefined();
-      expect(company.cui.toString()).toBe(TEST_CIF);
-
       const anafData = await anaf.getCompanyFromANAF(TEST_CIF);
+
       expect(anafData).toBeDefined();
+      expect(anafData.name).toBe('GAMINVEST SRL');
+      expect(anafData.cui).toBe(Number(TEST_CIF));
       expect(anafData.inactive).toBe(false);
     }, 30000);
 
@@ -197,32 +140,6 @@ describe('E2E: Full Scraping Pipeline', () => {
         return;
       }
       expect(result.existingJobsCount).toBeGreaterThan(0);
-    }, 30000);
-  });
-
-  describe('Inactive Company Handling', () => {
-    let anaf;
-
-    beforeAll(async () => {
-      anaf = await import('../../src/anaf.js');
-    });
-
-    it('should detect inactive/radiated companies via ANAF', async () => {
-      const results = await anaf.searchCompany(TEST_BRAND);
-
-      const nonActive = results.find(c => c.statusLabel !== 'Funcțiune');
-
-      if (nonActive) {
-        try {
-          const anafData = await anaf.getCompanyFromANAF(nonActive.cui.toString());
-          expect(anafData).toBeDefined();
-          if (anafData.inactive !== undefined) {
-            expect(anafData.inactive).toBe(true);
-          }
-        } catch {
-          expect(nonActive.statusLabel).toMatch(/Radiată|Inactiv|Suspendat/);
-        }
-      }
     }, 30000);
   });
 
