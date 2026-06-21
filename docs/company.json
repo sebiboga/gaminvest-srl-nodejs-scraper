@@ -1,11 +1,11 @@
 {
-  "cif": "33159615",
-  "legalName": "EPAM SYSTEMS INTERNATIONAL SRL",
-  "brand": "EPAM",
-  "website": "https://www.epam.com",
-  "careerUrl": "https://careers.epam.com",
-  "apiBase": "https://careers.epam.com",
+  "cif": "21913994",
+  "legalName": "GAMINVEST SRL",
+  "brand": "GAMINVEST",
+  "website": "https://www.gaminvest.ro",
+  "careerUrl": "https://www.gaminvest.ro/cariere.html",
+  "apiBase": "https://www.gaminvest.ro",
   "apiCountryId": "8150000000000001155",
-  "defaultLocation": "București",
-  "scraperFile": "https://raw.githubusercontent.com/sebiboga/epam-systems-international-srl-nodejs-scraper/main/.github/workflows/job-seeker-ro-spider.yml"
+  "defaultLocation": "Oradea",
+  "scraperFile": "https://raw.githubusercontent.com/sebiboga/gaminvest-srl-nodejs-scraper/main/.github/workflows/job-seeker-ro-spider.yml"
 }

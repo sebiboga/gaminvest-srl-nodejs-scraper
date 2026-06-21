@@ -1,7 +1,7 @@
 # Update Repo About
 
 ## Description
-Scraper automat pentru locurile de muncă EPAM Systems International SRL (CIF: 33159615) — extrage din EPAM Careers API, validează via ANAF și publică pe peviitor.ro
+Scraper automat pentru locurile de muncă GAMINVEST SRL (CIF: 21913994) — extrage de pe gaminvest.ro, validează via ANAF și publică pe peviitor.ro
 
 ## Topics (exactly 2, per TOPICS.md)
 - job-seeker-ro-spider

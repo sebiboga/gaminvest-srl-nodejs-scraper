@@ -1,11 +1,11 @@
 {
   "validatedAt": "2026-04-13T11:09:40.321Z",
   "source": "ANAF",
-  "brand": "EPAM",
+  "brand": "GAMINVEST",
   "anaf": {
-    "cui": 33159615,
-    "name": "EPAM SYSTEMS INTERNATIONAL SRL",
-    "address": "MUNICIPIUL BUCUREŞTI, SECTOR 1, BLD IANCU DE HUNEDOARA, NR.48, ET.9",
+    "cui": 21913994,
+    "name": "GAMINVEST SRL",
+    "address": "Str. Oneștilor nr. 29, parter, sp. comercial 2-6, Oradea, Bihor",
     "registrationNumber": "J2014005735405",
     "phone": "",
     "fax": "",
@@ -68,32 +68,32 @@
     "onrcStatusLabel": "Funcțiune"
   },
   "peviitor": {
-    "id": "33159615",
-    "company": "EPAM SYSTEMS INTERNATIONAL SRL",
-    "brand": "EPAM",
-    "group": "EPAM Systems",
+    "id": "21913994",
+    "company": "GAMINVEST SRL",
+    "brand": "GAMINVEST",
+    "group": "GAMINVEST",
     "status": "activ",
     "website": [
-      "https://www.epam.com"
+      "https://www.gaminvest.ro"
     ],
     "career": [
-      "https://www.epam.com/careers/locations/romania"
+      "https://www.gaminvest.ro/cariere.html"
     ],
     "lastScraped": "2026-04-12",
-    "scraperFile": "epam.md",
+    "scraperFile": "gaminvest.md",
     "_version_": 1862291263324160000,
-    "_root_": "33159615"
+    "_root_": "21913994"
   },
   "summary": {
-    "company": "EPAM SYSTEMS INTERNATIONAL SRL",
-    "cif": "33159615",
+    "company": "GAMINVEST SRL",
+    "cif": "21913994",
     "active": true,
-    "inactiveSince": "2018-12-27",
-    "reactivatedSince": "2020-05-13",
-    "address": "MUNICIPIUL BUCUREŞTI, SECTOR 1, BLD IANCU DE HUNEDOARA, NR.48, ET.9",
+    "inactiveSince": null,
+    "reactivatedSince": null,
+    "address": "Str. Oneștilor nr. 29, parter, sp. comercial 2-6, Oradea, Bihor",
     "registrationNumber": "J2014005735405",
-    "caenCode": "6220",
-    "vatRegistered": true,
+    "caenCode": "",
+    "vatRegistered": false,
     "eFacturaRegistered": false
   }
 }

@@ -22,18 +22,18 @@ beforeAll(() => {
   }
 });
 
-const TEST_CIF = '33159615';
-const TEST_BRAND = 'EPAM';
-const EPAM_API_URL = 'https://careers.epam.com/api/jobs/v2/search/careers-i18n?from=0&lang=en&size=5&sortBy=relevance%3Brelocation%3Dasc&websiteLocale=en-us&facets=country%3D8150000000000001155';
+const TEST_CIF = '21913994';
+const TEST_BRAND = 'GAMINVEST';
+const GAMINVEST_API_URL = 'https://www.gaminvest.ro/api/jobs/v2/search/careers-i18n?from=0&lang=en&size=5&sortBy=relevance%3Brelocation%3Dasc&websiteLocale=en-us&facets=country%3D8150000000000001155';
 const ROMANIAN_CITIES = ['Bucharest', 'București', 'Cluj-Napoca', 'Timișoara', 'Iași', 'Brașov', 'Constanța', 'Sibiu', 'Oradea'];
 
 describe('E2E: Full Scraping Pipeline', () => {
 
-  describe('EPAM Careers API — Real Data Fetch', () => {
+  describe('GAMINVEST Careers API — Real Data Fetch', () => {
     let apiData;
 
     beforeAll(async () => {
-      const res = await fetch(EPAM_API_URL, {
+      const res = await fetch(GAMINVEST_API_URL, {
         headers: {
           'User-Agent': 'job_seeker_ro_spider',
           'Accept': 'application/json'
@@ -42,7 +42,7 @@ describe('E2E: Full Scraping Pipeline', () => {
       apiData = await res.json();
     }, 15000);
 
-    it('should respond with valid job data from EPAM API', () => {
+    it('should respond with valid job data from GAMINVEST API', () => {
       expect(apiData).toHaveProperty('data');
       expect(apiData.data).toHaveProperty('jobs');
       expect(Array.isArray(apiData.data.jobs)).toBe(true);
@@ -83,7 +83,7 @@ describe('E2E: Full Scraping Pipeline', () => {
 
     beforeAll(async () => {
       index = await import('../../index.js');
-      const res = await fetch(EPAM_API_URL, {
+      const res = await fetch(GAMINVEST_API_URL, {
         headers: {
           'User-Agent': 'job_seeker_ro_spider',
           'Accept': 'application/json'
@@ -92,7 +92,7 @@ describe('E2E: Full Scraping Pipeline', () => {
       apiData = await res.json();
     }, 15000);
 
-    it('should parse real EPAM API response into standardized format', () => {
+    it('should parse real GAMINVEST API response into standardized format', () => {
       const result = index.parseApiJobs(apiData);
 
       expect(result).toHaveProperty('jobs');
@@ -102,7 +102,7 @@ describe('E2E: Full Scraping Pipeline', () => {
 
       const parsed = result.jobs[0];
       expect(parsed).toHaveProperty('url');
-      expect(parsed.url).toMatch(/^https:\/\/careers\.epam\.com\//);
+      expect(parsed.url).toMatch(/^https:\/\/www\.gaminvest\.ro\//);
       expect(parsed).toHaveProperty('title');
       expect(parsed).toHaveProperty('workmode');
       expect(['remote', 'on-site', 'hybrid']).toContain(parsed.workmode);
@@ -121,7 +121,7 @@ describe('E2E: Full Scraping Pipeline', () => {
       expect(model).toHaveProperty('cif', TEST_CIF);
       expect(model).toHaveProperty('status', 'scraped');
       expect(model).toHaveProperty('date');
-      expect(model.url).toMatch(/^https:\/\/careers\.epam\.com\//);
+      expect(model.url).toMatch(/^https:\/\/www\.gaminvest\.ro\//);
     });
 
     it('should transform jobs and filter to Romanian locations', () => {
@@ -129,15 +129,15 @@ describe('E2E: Full Scraping Pipeline', () => {
       const jobs = parsed.jobs.map(j => index.mapToJobModel(j, TEST_CIF));
 
       const payload = {
-        source: 'epam.com',
-        company: 'EPAM SYSTEMS INTERNATIONAL SRL',
+        source: 'gaminvest.ro',
+        company: 'GAMINVEST SRL',
         cif: TEST_CIF,
         jobs
       };
 
       const transformed = index.transformJobsForSOLR(payload);
 
-      expect(transformed.company).toBe('EPAM SYSTEMS INTERNATIONAL SRL');
+      expect(transformed.company).toBe('GAMINVEST SRL');
       expect(transformed.jobs.length).toBe(jobs.length);
 
       for (const job of transformed.jobs) {
@@ -170,15 +170,15 @@ describe('E2E: Full Scraping Pipeline', () => {
       company = await import('../../company.js');
     });
 
-    it('should find EPAM in ANAF and validate active status', async () => {
+    it('should find GAMINVEST in ANAF and validate active status', async () => {
       const results = await anaf.searchCompany(TEST_BRAND);
 
-      const epam = results.find(c =>
+      const company = results.find(c =>
         c.name.toUpperCase().startsWith(TEST_BRAND + ' ') &&
         c.statusLabel === 'Funcțiune'
       );
-      expect(epam).toBeDefined();
-      expect(epam.cui.toString()).toBe(TEST_CIF);
+      expect(company).toBeDefined();
+      expect(company.cui.toString()).toBe(TEST_CIF);
 
       const anafData = await anaf.getCompanyFromANAF(TEST_CIF);
       expect(anafData).toBeDefined();
@@ -189,11 +189,11 @@ describe('E2E: Full Scraping Pipeline', () => {
       const result = await company.validateAndGetCompany();
 
       expect(result.status).toBe('active');
-      expect(result.company).toBe('EPAM SYSTEMS INTERNATIONAL SRL');
+      expect(result.company).toBe('GAMINVEST SRL');
       expect(result.cif).toBe(TEST_CIF);
 
       if (result.existingJobsCount === 0) {
-        console.log('⚠️ No EPAM jobs in Solr — skipping job count assertion');
+        console.log('⚠️ No GAMINVEST jobs in Solr — skipping job count assertion');
         return;
       }
       expect(result.existingJobsCount).toBeGreaterThan(0);
@@ -208,7 +208,7 @@ describe('E2E: Full Scraping Pipeline', () => {
     });
 
     it('should detect inactive/radiated companies via ANAF', async () => {
-      const results = await anaf.searchCompany('EPAM');
+      const results = await anaf.searchCompany(TEST_BRAND);
 
       const nonActive = results.find(c => c.statusLabel !== 'Funcțiune');
 
@@ -233,27 +233,27 @@ describe('E2E: Full Scraping Pipeline', () => {
       solr = await import('../../solr.js');
     });
 
-    itIfSolr('should have EPAM jobs in SOLR with correct company name', async () => {
+    itIfSolr('should have GAMINVEST jobs in SOLR with correct company name', async () => {
       const result = await solr.querySOLR(TEST_CIF);
 
       if (result.numFound === 0) {
-        console.log('⚠️ No EPAM jobs in Solr — skipping SOLR data verification');
+        console.log('⚠️ No GAMINVEST jobs in Solr — skipping SOLR data verification');
         return;
       }
 
       for (const job of result.docs) {
-        expect(job.company).toBe('EPAM SYSTEMS INTERNATIONAL SRL');
+        expect(job.company).toBe('GAMINVEST SRL');
         expect(job.cif).toBe(TEST_CIF);
       }
     }, 15000);
 
-    itIfSolr('should have EPAM company core entry with required fields', async () => {
+    itIfSolr('should have GAMINVEST company core entry with required fields', async () => {
       const result = await solr.queryCompanySOLR(`id:${TEST_CIF}`);
 
       expect(result.numFound).toBe(1);
-      const epam = result.docs[0];
-      expect(epam.company).toBe('EPAM SYSTEMS INTERNATIONAL SRL');
-      expect(epam.status).toBe('activ');
+      const company = result.docs[0];
+      expect(company.company).toBe('GAMINVEST SRL');
+      expect(company.status).toBe('activ');
     }, 15000);
   });
 });

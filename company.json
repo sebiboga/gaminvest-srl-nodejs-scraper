@@ -1,47 +1,40 @@
 {
   "validatedAt": "2026-04-14T09:42:51.290Z",
   "source": "ANAF",
-  "brand": "EPAM",
+  "brand": "GAMINVEST",
   "anaf": {
-    "cui": 33159615,
-    "name": "EPAM SYSTEMS INTERNATIONAL SRL",
-    "address": "MUNICIPIUL BUCUREŞTI, SECTOR 1, BLD IANCU DE HUNEDOARA, NR.48, ET.9",
-    "registrationNumber": "J2014005735405",
+    "cui": 21913994,
+    "name": "GAMINVEST SRL",
+    "address": "Str. Oneștilor nr. 29, parter, sp. comercial 2-6, Oradea, Bihor",
+    "registrationNumber": "",
     "phone": "",
     "fax": "",
-    "postalCode": "11745",
-    "caenCode": "6220",
+    "postalCode": "",
+    "caenCode": "",
     "iban": "",
-    "registrationState": "TRANSFER(SOSIRE) din data 20.04.2022",
-    "registrationDate": "2014-05-14",
-    "fiscalAuthority": "Direcţia Generală a Finanţelor Publice Municipiul Bucureşti",
-    "ownershipForm": "PROPR.PRIVATA-CAPITAL PRIVAT STRAIN",
-    "organizationForm": "PERSOANA JURIDICA",
-    "legalForm": "SOCIETATE COMERCIALĂ CU RĂSPUNDERE LIMITATĂ",
-    "vatRegistered": true,
-    "vatPeriods": [
-      {
-        "start": "2020-07-24",
-        "end": null,
-        "yearStart": "",
-        "message": ""
-      }
-    ],
+    "registrationState": "",
+    "registrationDate": "",
+    "fiscalAuthority": "",
+    "ownershipForm": "",
+    "organizationForm": "",
+    "legalForm": "",
+    "vatRegistered": false,
+    "vatPeriods": [],
     "cashBasisVat": false,
     "cashBasisVatStart": null,
     "cashBasisVatEnd": null,
     "inactive": false,
-    "inactiveSince": "2018-12-27",
-    "reactivatedSince": "2020-05-13",
+    "inactiveSince": null,
+    "reactivatedSince": null,
     "splitVat": false,
     "eFacturaRegistered": false,
     "headquartersAddress": {
-      "street": "Bld. Iancu de Hunedoara",
-      "number": "48",
-      "locality": "Sector 1 Mun. Bucureşti",
-      "county": "MUNICIPIUL BUCUREŞTI",
+      "street": "Oneștilor",
+      "number": "29",
+      "locality": "Oradea",
+      "county": "BIHOR",
       "country": "",
-      "postalCode": "11745"
+      "postalCode": ""
     },
     "fiscalAddress": {
       "street": "",
@@ -51,33 +44,22 @@
       "country": "",
       "postalCode": ""
     },
-    "administrators": [
-      {
-        "name": "JASON PETERSON",
-        "role": "administrator"
-      }
-    ],
-    "authorizedCaenCodes": [
-      "6210",
-      "6220",
-      "6290",
-      "7020",
-      "8559"
-    ],
-    "onrcStatus": 1048,
-    "onrcStatusLabel": "Funcțiune"
+    "administrators": [],
+    "authorizedCaenCodes": [],
+    "onrcStatus": null,
+    "onrcStatusLabel": ""
   },
   "peviitor": null,
   "summary": {
-    "company": "EPAM SYSTEMS INTERNATIONAL SRL",
-    "cif": "33159615",
+    "company": "GAMINVEST SRL",
+    "cif": "21913994",
     "active": true,
-    "inactiveSince": "2018-12-27",
-    "reactivatedSince": "2020-05-13",
-    "address": "MUNICIPIUL BUCUREŞTI, SECTOR 1, BLD IANCU DE HUNEDOARA, NR.48, ET.9",
-    "registrationNumber": "J2014005735405",
-    "caenCode": "6220",
-    "vatRegistered": true,
+    "inactiveSince": null,
+    "reactivatedSince": null,
+    "address": "Str. Oneștilor nr. 29, parter, sp. comercial 2-6, Oradea, Bihor",
+    "registrationNumber": "",
+    "caenCode": "",
+    "vatRegistered": false,
     "eFacturaRegistered": false
   }
 }

@@ -45,7 +45,7 @@ All scraper code, CI workflows, and the static HTML read from this file. You sho
 | `UPDATE-REPO-ABOUT.md` | New description with legal name and CIF |
 | `package.json` | `name` field |
 | `README.md` | Title, badges (URLs to the new repo), Overview |
-| `tests/validate-epam-jobs.js` | Rename to `validate-<brand>-jobs.js` |
+| `tests/validate-gaminvest-jobs.js` | Already renamed from template |
 
 **Critical — update test files to match the new scraper's API:**
 
@@ -88,7 +88,7 @@ Follow [VERIFY.md](VERIFY.md) before merging. The same 4 levels of tests (unit /
 
 ```bash
 # Clone your fork
-git clone https://github.com/YOUR_USERNAME/epam-systems-international-srl-nodejs-scraper.git
+git clone https://github.com/YOUR_USERNAME/gaminvest-srl-nodejs-scraper.git
 
 # Install dependencies
 npm install
@@ -99,7 +99,7 @@ npm test
 
 ## Reporting Issues
 
-Open a [GitHub Issue](https://github.com/sebiboga/epam-systems-international-srl-nodejs-scraper/issues) with:
+Open a [GitHub Issue](https://github.com/sebiboga/gaminvest-srl-nodejs-scraper/issues) with:
 - Clear description of the problem
 - Steps to reproduce
 - Expected vs actual behavior

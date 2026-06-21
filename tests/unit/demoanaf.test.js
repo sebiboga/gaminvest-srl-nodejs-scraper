@@ -28,23 +28,23 @@ function errorResponse(status) {
   };
 }
 
-const ANRAF_RECORD = {
-  cui: 33159615,
-  name: 'EPAM SYSTEMS INTERNATIONAL SRL',
-  address: 'IANCU DE HUNEDOARA, 48, Bucureşti Sectorul 1, Bucureşti',
-  caenCode: '6220',
+const GAMINVEST_ANAF_RECORD = {
+  cui: 21913994,
+  name: 'GAMINVEST SRL',
+  address: 'Str. Oneștilor nr. 29, parter, sp. comercial 2-6, Oradea, Bihor',
+  caenCode: '',
   inactive: false,
-  inactiveSince: '2018-12-27',
-  reactivatedSince: '2020-05-13',
-  registrationNumber: 'J2014005735405',
-  vatRegistered: true,
+  inactiveSince: null,
+  reactivatedSince: null,
+  registrationNumber: '',
+  vatRegistered: false,
   onrcStatusLabel: 'Funcțiune',
   legalForm: 'SRL'
 };
 
 const CACHED_DATA = {
-  cui: 33159615,
-  name: 'EPAM SYSTEMS INTERNATIONAL SRL',
+  cui: 21913994,
+  name: 'GAMINVEST SRL',
   address: 'MUNICIPIUL BUCUREŞTI, SECTOR 1, BLD IANCU DE HUNEDOARA, NR.48, ET.9',
   registrationNumber: 'J2014005735405',
   caenCode: '6220',
@@ -68,10 +68,10 @@ describe('src/anaf.js', () => {
   describe('searchCompany', () => {
     it('should return array of companies for valid brand', async () => {
       mockFetch.mockResolvedValue(anafSearchResponse([
-        { cui: 33159615, name: 'EPAM SYSTEMS INTERNATIONAL SRL', statusLabel: 'Funcțiune' }
+        { cui: 21913994, name: 'GAMINVEST SRL', statusLabel: 'Funcțiune' }
       ]));
 
-      const results = await anaf.searchCompany('EPAM');
+      const results = await anaf.searchCompany('GAMINVEST');
 
       expect(Array.isArray(results)).toBe(true);
       expect(results.length).toBeGreaterThan(0);
@@ -90,10 +90,10 @@ describe('src/anaf.js', () => {
 
     it('should include statusLabel in results', async () => {
       mockFetch.mockResolvedValue(anafSearchResponse([
-        { cui: 33159615, name: 'EPAM SYSTEMS INTERNATIONAL SRL', statusLabel: 'Funcțiune' }
+        { cui: 21913994, name: 'GAMINVEST SRL', statusLabel: 'Funcțiune' }
       ]));
 
-      const results = await anaf.searchCompany('EPAM');
+      const results = await anaf.searchCompany('GAMINVEST');
 
       expect(results[0]).toHaveProperty('statusLabel', 'Funcțiune');
     });
@@ -101,7 +101,7 @@ describe('src/anaf.js', () => {
     it('should throw on HTTP error', async () => {
       mockFetch.mockResolvedValue(errorResponse(500));
 
-      await expect(anaf.searchCompany('EPAM')).rejects.toThrow('ANAF search error: 500');
+      await expect(anaf.searchCompany('GAMINVEST')).rejects.toThrow('ANAF search error: 500');
     });
 
     it('should encode brand name in URL', async () => {
@@ -111,20 +111,20 @@ describe('src/anaf.js', () => {
         return Promise.resolve(anafSearchResponse([]));
       });
 
-      await anaf.searchCompany('EPAM SRL');
-      expect(capturedUrl).toContain(encodeURIComponent('EPAM SRL'));
+      await anaf.searchCompany('GAMINVEST SRL');
+      expect(capturedUrl).toContain(encodeURIComponent('GAMINVEST SRL'));
     });
   });
 
   describe('getCompanyFromANAF', () => {
     it('should return company data for valid CIF', async () => {
-      mockFetch.mockResolvedValue(anafCompanyResponse(ANRAF_RECORD));
+      mockFetch.mockResolvedValue(anafCompanyResponse(GAMINVEST_ANAF_RECORD));
 
-      const data = await anaf.getCompanyFromANAF('33159615');
+      const data = await anaf.getCompanyFromANAF('21913994');
 
       expect(data).toBeDefined();
-      expect(data.cui).toBe(33159615);
-      expect(data.name).toBe('EPAM SYSTEMS INTERNATIONAL SRL');
+      expect(data.cui).toBe(21913994);
+      expect(data.name).toBe('GAMINVEST SRL');
       expect(data).toHaveProperty('address');
       expect(data).toHaveProperty('registrationNumber');
     });
@@ -132,19 +132,19 @@ describe('src/anaf.js', () => {
     it('should retry on HTTP error then succeed', async () => {
       mockFetch
         .mockResolvedValueOnce(errorResponse(500))
-        .mockResolvedValueOnce(anafCompanyResponse(ANRAF_RECORD));
+        .mockResolvedValueOnce(anafCompanyResponse(GAMINVEST_ANAF_RECORD));
 
-      const data = await anaf.getCompanyFromANAF('33159615');
+      const data = await anaf.getCompanyFromANAF('21913994');
 
       expect(data).toBeDefined();
-      expect(data.cui).toBe(33159615);
+      expect(data.cui).toBe(21913994);
       expect(mockFetch).toHaveBeenCalledTimes(2);
     });
 
     it('should throw after exhausting retries', async () => {
       mockFetch.mockResolvedValue(errorResponse(500));
 
-      await expect(anaf.getCompanyFromANAF('33159615')).rejects.toThrow();
+      await expect(anaf.getCompanyFromANAF('21913994')).rejects.toThrow();
       expect(mockFetch).toHaveBeenCalledTimes(3);
     });
 
@@ -160,24 +160,24 @@ describe('src/anaf.js', () => {
     it('should return null when data is null', async () => {
       mockFetch.mockResolvedValue(anafCompanyResponse(null));
 
-      const data = await anaf.getCompanyFromANAF('33159615');
+      const data = await anaf.getCompanyFromANAF('21913994');
       expect(data).toBeNull();
     });
   });
 
   describe('getCompanyFromANAFWithFallback', () => {
     it('should return fresh data when API works', async () => {
-      mockFetch.mockResolvedValue(anafCompanyResponse(ANRAF_RECORD));
+      mockFetch.mockResolvedValue(anafCompanyResponse(GAMINVEST_ANAF_RECORD));
 
-      const data = await anaf.getCompanyFromANAFWithFallback('33159615');
+      const data = await anaf.getCompanyFromANAFWithFallback('21913994');
 
-      expect(data.name).toBe('EPAM SYSTEMS INTERNATIONAL SRL');
+      expect(data.name).toBe('GAMINVEST SRL');
     });
 
     it('should use cached data when API fails', async () => {
       mockFetch.mockResolvedValue(errorResponse(500));
 
-      const data = await anaf.getCompanyFromANAFWithFallback('33159615', CACHED_DATA);
+      const data = await anaf.getCompanyFromANAFWithFallback('21913994', CACHED_DATA);
 
       expect(data).toEqual(CACHED_DATA);
     });
@@ -185,7 +185,7 @@ describe('src/anaf.js', () => {
     it('should throw when API fails and no cache available', async () => {
       mockFetch.mockResolvedValue(errorResponse(500));
 
-      await expect(anaf.getCompanyFromANAFWithFallback('33159615')).rejects.toThrow();
+      await expect(anaf.getCompanyFromANAFWithFallback('21913994')).rejects.toThrow();
     });
   });
 });
