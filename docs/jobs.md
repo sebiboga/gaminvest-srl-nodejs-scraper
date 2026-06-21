@@ -14,7 +14,7 @@
 
 ## Current Job Listings (5)
 
-_Generated: 2026-06-21T00:33:05.353Z_
+_Generated: 2026-06-21T09:43:12.571Z_
 
 ### Broker imobiliar in Oradea
 
