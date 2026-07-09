@@ -10,11 +10,11 @@
 | Location | ONEŞTILOR, 29, Municipiul Oradea, Bihor |
 | Website | [https://www.gaminvest.ro](https://www.gaminvest.ro) |
 | Careers | [https://www.gaminvest.ro/cariere.html](https://www.gaminvest.ro/cariere.html) |
-| Last Scraped | 2026-07-08 |
+| Last Scraped | 2026-07-09 |
 
 ## Current Job Listings (5)
 
-_Generated: 2026-07-08T08:19:05.331Z_
+_Generated: 2026-07-09T09:30:08.817Z_
 
 ### Broker imobiliar in Oradea
 
